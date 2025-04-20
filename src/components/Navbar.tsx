@@ -1,11 +1,20 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useParkingStore } from '@/lib/store';
+import { supabase } from '@/integrations/supabase/client';
+import { LogOut, LogIn } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { currentUser, setCurrentUser } = useParkingStore();
+  const navigate = useNavigate();
+  
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setCurrentUser(null);
+    navigate('/auth');
+  };
   
   const handleRoleToggle = () => {
     if (currentUser?.role === 'admin') {
@@ -33,11 +42,33 @@ export const Navbar: React.FC = () => {
             Ticket Scanner
           </Link>
           
-          <Button variant="outline" onClick={handleRoleToggle}>
-            {currentUser?.role === 'admin' 
-              ? 'Switch to User' 
-              : 'Switch to Admin'}
-          </Button>
+          {currentUser && (
+            <Button variant="outline" onClick={handleRoleToggle}>
+              {currentUser.role === 'admin' 
+                ? 'Switch to User' 
+                : 'Switch to Admin'}
+            </Button>
+          )}
+
+          {currentUser ? (
+            <Button 
+              variant="ghost" 
+              onClick={handleSignOut}
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
+          ) : (
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/auth')}
+              className="text-primary hover:text-primary-dark"
+            >
+              <LogIn className="w-4 h-4 mr-2" />
+              Sign In
+            </Button>
+          )}
         </div>
       </div>
     </div>
