@@ -24,6 +24,12 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+                // ParkEase custom colors
+                parking: {
+                    available: '#FFFFFF', // white for available spots
+                    unavailable: '#8E9196', // grey for unavailable spots
+                    selected: '#10b981', // green for selected spots
+                },
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
