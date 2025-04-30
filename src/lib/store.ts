@@ -8,6 +8,8 @@ interface ParkingState {
   reservations: Reservation[];
   selectedSpotId: string | null;
   currentUser: User | null;
+  selectedStartTime: Date | null; // New field for start time
+  selectedEndTime: Date | null; // New field for end time
   
   // Admin actions
   initializeLayout: (rows: number, columns: number) => void;
@@ -15,7 +17,8 @@ interface ParkingState {
   
   // User actions
   selectSpot: (spotId: string) => void;
-  createReservation: (reservationData: Omit<Reservation, 'id' | 'ticketId' | 'createdAt' | 'startTime' | 'endTime'>) => string;
+  setReservationTimes: (startTime: Date, endTime: Date) => void; // New action
+  createReservation: (reservationData: Omit<Reservation, 'id' | 'ticketId' | 'createdAt' | 'startTime' | 'endTime' | 'reservationStartTime' | 'reservationEndTime'>) => string;
   startSession: (ticketId: string) => Reservation | null;
   endSession: (ticketId: string) => Reservation | null;
   
@@ -30,6 +33,8 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
   reservations: loadParkingData<Reservation[]>('reservations', []),
   selectedSpotId: null,
   currentUser: null,
+  selectedStartTime: null,
+  selectedEndTime: null,
   
   // Admin actions
   initializeLayout: (rows: number, columns: number) => {
@@ -58,8 +63,12 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
     set({ selectedSpotId: spotId });
   },
   
+  setReservationTimes: (startTime: Date, endTime: Date) => {
+    set({ selectedStartTime: startTime, selectedEndTime: endTime });
+  },
+  
   createReservation: (reservationData) => {
-    const { parkingLayout, reservations, selectedSpotId } = get();
+    const { parkingLayout, reservations, selectedSpotId, selectedStartTime, selectedEndTime } = get();
     
     if (!selectedSpotId) {
       throw new Error('No parking spot selected');
@@ -77,6 +86,8 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
       startTime: null,
       endTime: null,
       createdAt: new Date().toISOString(),
+      reservationStartTime: selectedStartTime ? selectedStartTime.toISOString() : undefined,
+      reservationEndTime: selectedEndTime ? selectedEndTime.toISOString() : undefined,
       ...reservationData
     };
     
@@ -93,7 +104,9 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
     set({ 
       parkingLayout: newLayout, 
       reservations: [...reservations, newReservation],
-      selectedSpotId: null
+      selectedSpotId: null,
+      selectedStartTime: null,
+      selectedEndTime: null
     });
     
     // Save to localStorage

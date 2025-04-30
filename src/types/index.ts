@@ -22,6 +22,8 @@ export interface Reservation {
   paymentMethod: string;
   ticketId: string;
   createdAt: string;
+  reservationStartTime?: string; // New field for reservation start time
+  reservationEndTime?: string; // New field for reservation end time
 }
 
 export type PaymentMethod = 'credit_card' | 'debit_card' | 'paypal';

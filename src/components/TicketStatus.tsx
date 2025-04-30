@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useParkingStore } from '@/lib/store';
 import { useTicketTimer } from '@/hooks/useTicketTimer';
+import { format } from 'date-fns';
 
 export const TicketStatus: React.FC = () => {
   const [searchTicketId, setSearchTicketId] = useState('');
@@ -63,6 +64,20 @@ export const TicketStatus: React.FC = () => {
                 <span className="font-medium">License Plate:</span>
                 <span>{reservation.licensePlate}</span>
               </div>
+              
+              {reservation.reservationStartTime && (
+                <div className="flex justify-between">
+                  <span className="font-medium">Reserved From:</span>
+                  <span>{format(new Date(reservation.reservationStartTime), 'MMM d, h:mm a')}</span>
+                </div>
+              )}
+              
+              {reservation.reservationEndTime && (
+                <div className="flex justify-between">
+                  <span className="font-medium">Reserved Until:</span>
+                  <span>{format(new Date(reservation.reservationEndTime), 'MMM d, h:mm a')}</span>
+                </div>
+              )}
               
               <div className="flex justify-between">
                 <span className="font-medium">Status:</span>

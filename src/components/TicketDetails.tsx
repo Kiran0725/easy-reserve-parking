@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Reservation } from '@/types';
 import { Button } from '@/components/ui/button';
+import { format } from 'date-fns';
 
 interface TicketDetailsProps {
   ticketId: string;
@@ -35,6 +36,25 @@ export const TicketDetails: React.FC<TicketDetailsProps> = ({ ticketId, reservat
             <div className="text-sm font-medium">Date</div>
             <div className="font-semibold">{new Date(reservation.createdAt).toLocaleDateString()}</div>
           </div>
+          
+          {reservation.reservationStartTime && (
+            <div>
+              <div className="text-sm font-medium">Reserved From</div>
+              <div className="font-semibold">
+                {format(new Date(reservation.reservationStartTime), 'MMM d, h:mm a')}
+              </div>
+            </div>
+          )}
+          
+          {reservation.reservationEndTime && (
+            <div>
+              <div className="text-sm font-medium">Reserved Until</div>
+              <div className="font-semibold">
+                {format(new Date(reservation.reservationEndTime), 'MMM d, h:mm a')}
+              </div>
+            </div>
+          )}
+          
           <div>
             <div className="text-sm font-medium">Vehicle</div>
             <div className="font-semibold">{reservation.licensePlate}</div>

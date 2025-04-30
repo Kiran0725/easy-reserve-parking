@@ -6,9 +6,10 @@ import { TicketDetails } from '@/components/TicketDetails';
 import { useParkingStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { ReservationTimeForm } from '@/components/ReservationTimeForm';
 
 const UserHome: React.FC = () => {
-  const [step, setStep] = useState<'grid' | 'form' | 'confirmation'>('grid');
+  const [step, setStep] = useState<'grid' | 'time' | 'form' | 'confirmation'>('grid');
   const [ticketId, setTicketId] = useState<string | null>(null);
   
   const { selectedSpotId, reservations } = useParkingStore();
@@ -53,8 +54,8 @@ const UserHome: React.FC = () => {
           
           {selectedSpotId && (
             <div className="flex justify-center">
-              <Button onClick={() => setStep('form')} className="mt-4">
-                Continue to Booking
+              <Button onClick={() => setStep('time')} className="mt-4">
+                Continue to Select Time
               </Button>
             </div>
           )}
@@ -63,6 +64,7 @@ const UserHome: React.FC = () => {
             <h2 className="font-semibold text-blue-800 mb-2">How it works:</h2>
             <ol className="list-decimal pl-5 text-blue-700 space-y-1">
               <li>Select an available parking spot</li>
+              <li>Choose your parking time</li>
               <li>Fill in your details and payment information</li>
               <li>Receive your ticket ID for entry and exit</li>
               <li>Use the ticket scanner when you arrive and leave</li>
@@ -72,10 +74,23 @@ const UserHome: React.FC = () => {
         </div>
       )}
       
-      {step === 'form' && (
-        <div className="space-y-4">
+      {step === 'time' && (
+        <div className="space-y-4 max-w-md mx-auto">
           <Button variant="outline" onClick={() => setStep('grid')} className="mb-4">
             ← Back to Parking Map
+          </Button>
+          
+          <ReservationTimeForm 
+            onNext={() => setStep('form')}
+            onBack={() => setStep('grid')} 
+          />
+        </div>
+      )}
+      
+      {step === 'form' && (
+        <div className="space-y-4 max-w-md mx-auto">
+          <Button variant="outline" onClick={() => setStep('time')} className="mb-4">
+            ← Back to Time Selection
           </Button>
           
           <ReservationForm onSuccess={handleReservationSuccess} />
